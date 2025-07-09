@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Music Player UI</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background-color: #121212;
+            font-family: Arial, sans-serif;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        .player {
+            width: 100%;
+            max-width: 420px;
+            background-color: #1e1e1e;
+            padding: 1rem;
+            border-radius: 16px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .album-art {
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .album-art img {
+            width: 100%;
+            display: block;
+        }
+
+        .track-info {
+            text-align: center;
+        }
+
+        .track-info h2 {
+            margin: 10px 0 5px;
+            font-size: 1.4rem;
+        }
+
+        .track-info p {
+            color: #aaa;
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .progress-container {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin: 1.2rem 0;
+            font-size: 0.9rem;
+        }
+
+        .progress-container input[type="range"] {
+            flex: 1;
+            accent-color: #fff;
+            height: 4px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .controls button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.6rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .controls .play-btn {
+            background-color: white;
+            color: black;
+            border-radius: 50%;
+            width: 55px;
+            height: 55px;
+            font-size: 1.6rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            font-size: 0.9rem;
+            color: #aaa;
+            border-top: 1px solid #333;
+            padding-top: 0.8rem;
+        }
+        .review-box {
+            display: none;
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #2a2a2a;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            color: #ddd;
+            text-align: center;
+            transition: all 0.3s ease;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .tabs span {
+            cursor: pointer;
+        }
+
+        .tabs span:hover {
+            color: #fff;
+        }
+
+        @media (max-width: 360px) {
+            .controls {
+                gap: 0.8rem;
+            }
+            .controls .play-btn {
+                width: 48px;
+                height: 48px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="player">
+    <div class="album-art">
+        <img src="kissoflove.png" alt="Album Art" />
+    </div>
+
+    <div class="track-info">
+        <h2>Kiss of Life</h2>
+        <p>Sade</p>
+    </div>
+
+    <div class="progress-container">
+        <span id="currentTime">0:00</span>
+        <input type="range" id="progress" value="0" />
+        <span id="duration">5:50</span>
+    </div>
+
+    <div class="controls">
+        <button onclick="toggleShuffle()">⮂</button>
+        <button onclick="skip(-10)">⏮</button>
+        <button class="play-btn" onclick="togglePlay()">▶</button>
+        <button onclick="skip(10)">⏭</button>
+        <button onclick="toggleRepeat()">🗘</button>
+    </div>
+
+    <div class="tabs" onclick="toggleReview()">
+        <span>SONG REVIEW</span>
+    </div>
+
+    <div class="review-box" id="reviewBox">
+        <p>This song feels like that soft moment when someone looks at you like you’re home.</p>
+    </div>
+
+
+    <audio id="audio" src="Sade - Kiss Of Life - Official - 1993.mp3"></audio>
+</div>
+
+<script>
+    const audio = document.getElementById('audio');
+    const progress = document.getElementById('progress');
+    const playBtn = document.querySelector('.play-btn');
+    const currentTime = document.getElementById('currentTime');
+    const duration = document.getElementById('duration');
+
+    audio.addEventListener('loadedmetadata', () => {
+        duration.textContent = formatTime(audio.duration);
+    });
+
+    audio.addEventListener('timeupdate', () => {
+        progress.value = (audio.currentTime / audio.duration) * 100;
+        currentTime.textContent = formatTime(audio.currentTime);
+    });
+
+    progress.addEventListener('input', () => {
+        audio.currentTime = (progress.value / 100) * audio.duration;
+    });
+
+    function togglePlay() {
+        if (audio.paused) {
+            audio.play();
+            playBtn.textContent = "⏸";
+        } else {
+            audio.pause();
+            playBtn.textContent = "▶";
+        }
+    }
+
+    function skip(seconds) {
+        audio.currentTime += seconds;
+    }
+
+    function toggleShuffle() {
+        alert("Shuffle toggled (demo only)");
+    }
+
+    function toggleRepeat() {
+        audio.loop = !audio.loop;
+        alert(`Repeat ${audio.loop ? "on" : "off"}`);
+    }
+
+    function formatTime(seconds) {
+        const min = Math.floor(seconds / 60);
+        const sec = Math.floor(seconds % 60).toString().padStart(2, '0');
+        return `${min}:${sec}`;
+    }
+    function toggleReview() {
+        const reviewBox = document.getElementById("reviewBox");
+        reviewBox.style.display =
+            reviewBox.style.display === "block" ? "none" : "block";
+    }
+
+    window.onload = () => {
+        audio.volume = 1;
+    };
+</script>
+
+</body>
+</html>
