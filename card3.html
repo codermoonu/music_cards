@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Can't Take My Eyes Off You - Frankie Valli</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Quicksand&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      background-color: #121212;
+      font-family: 'Quicksand', sans-serif;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .player {
+      width: 90%;
+      max-width: 400px;
+      background-color: #1e1e1e;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+
+    .album-art {
+      width: 100%;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .album-art img {
+      width: 100%;
+      display: block;
+    }
+
+    .track-info {
+      text-align: center;
+    }
+
+    .track-info h2 {
+      font-family: 'Playfair Display', serif;
+      margin: 10px 0 5px;
+      font-size: 20px;
+    }
+
+    .track-info p {
+      color: #aaa;
+      margin: 0;
+    }
+
+    .progress-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 15px 0;
+    }
+
+    .progress-container input[type="range"] {
+      flex: 1;
+      accent-color: white;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      align-items: center;
+      margin: 15px 0;
+    }
+
+    .controls button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    .controls .play-btn {
+      background-color: white;
+      color: black;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 24px;
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: space-around;
+      font-size: 14px;
+      color: #aaa;
+      margin-top: 20px;
+      border-top: 1px solid #333;
+      padding-top: 10px;
+      cursor: pointer;
+    }
+
+    .tabs:hover {
+      color: #fff;
+    }
+
+    .review-box {
+      display: none;
+      margin-top: 1rem;
+      padding: 1rem;
+      background-color: #2a2a2a;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      color: #ddd;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+  </style>
+</head>
+<body>
+
+<div class="player">
+  <div class="album-art">
+    <img src="canttakemyeyesoffyou.png" alt="Can't Take My Eyes Off You">
+  </div>
+
+  <div class="track-info">
+    <h2>Can't Take My Eyes Off You</h2>
+    <p>Frankie Valli</p>
+  </div>
+
+  <div class="progress-container">
+    <span id="currentTime">0:00</span>
+    <input type="range" id="progress" value="0" />
+    <span id="duration">3:40</span> <!-- Update if you know the exact time -->
+  </div>
+
+  <div class="controls">
+    <button onclick="toggleShuffle()">⮂</button>
+    <button onclick="skip(-10)">⏮</button>
+    <button class="play-btn" onclick="togglePlay()">▶</button>
+    <button onclick="skip(10)">⏭</button>
+    <button onclick="toggleRepeat()">🗘</button>
+  </div>
+
+  <div class="tabs" onclick="toggleReview()">
+    <span>SONG REVIEW</span>
+  </div>
+
+  <div class="review-box" id="reviewBox">
+    <p>One of those songs that makes you smile without warning — it's a crush in musical form 💌</p>
+  </div>
+
+  <audio id="audio" src="CantTakeMyEyesOffYou.mp3"></audio>
+</div>
+
+<script>
+  const audio = document.getElementById('audio');
+  const progress = document.getElementById('progress');
+  const playBtn = document.querySelector('.play-btn');
+  const currentTime = document.getElementById('currentTime');
+  const duration = document.getElementById('duration');
+
+  audio.addEventListener('loadedmetadata', () => {
+    duration.textContent = formatTime(audio.duration);
+  });
+
+  audio.addEventListener('timeupdate', () => {
+    progress.value = (audio.currentTime / audio.duration) * 100;
+    currentTime.textContent = formatTime(audio.currentTime);
+  });
+
+  progress.addEventListener('input', () => {
+    audio.currentTime = (progress.value / 100) * audio.duration;
+  });
+
+  function togglePlay() {
+    if (audio.paused) {
+      audio.play();
+      playBtn.textContent = "⏸";
+    } else {
+      audio.pause();
+      playBtn.textContent = "▶";
+    }
+  }
+
+  function skip(seconds) {
+    audio.currentTime += seconds;
+  }
+
+  function toggleShuffle() {
+    alert("Shuffle toggled (not functional in this demo)");
+  }
+
+  function toggleRepeat() {
+    audio.loop = !audio.loop;
+    alert(`Repeat ${audio.loop ? "on" : "off"}`);
+  }
+
+  function formatTime(seconds) {
+    const min = Math.floor(seconds / 60);
+    const sec = Math.floor(seconds % 60).toString().padStart(2, '0');
+    return `${min}:${sec}`;
+  }
+
+  function toggleReview() {
+    const reviewBox = document.getElementById("reviewBox");
+    reviewBox.style.display =
+            reviewBox.style.display === "block" ? "none" : "block";
+  }
+
+  window.onload = () => {
+    audio.volume = 1;
+  };
+</script>
+
+</body>
+</html>
