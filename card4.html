@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Catch the Rainbow - Rainbow</title>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Quicksand&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      background: radial-gradient(circle at top, #2e1d47, #0f0f1f);
+      font-family: 'Quicksand', sans-serif;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .player {
+      width: 90%;
+      max-width: 400px;
+      background: #1a1a2d;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 0 25px rgba(119, 81, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .album-art {
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .album-art img {
+      width: 100%;
+      display: block;
+    }
+
+    .track-info {
+      text-align: center;
+    }
+
+    .track-info h2 {
+      font-family: 'Great Vibes', cursive;
+      margin: 10px 0 5px;
+      font-size: 24px;
+    }
+
+    .track-info p {
+      color: #bbb;
+      margin: 0;
+    }
+
+    .progress-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 15px 0;
+    }
+
+    .progress-container input[type="range"] {
+      flex: 1;
+      accent-color: #ffc107;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      align-items: center;
+      margin: 15px 0;
+    }
+
+    .controls button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    .controls .play-btn {
+      background-color: white;
+      color: black;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 24px;
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: center;
+      font-size: 14px;
+      color: #aaa;
+      margin-top: 20px;
+      border-top: 1px solid #333;
+      padding-top: 10px;
+      cursor: pointer;
+    }
+
+    .tabs:hover {
+      color: #fff;
+    }
+
+    .review-box {
+      display: none;
+      margin-top: 1rem;
+      padding: 1rem;
+      background-color: #2a2a3d;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      color: #ddd;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+  </style>
+</head>
+<body>
+
+<div class="player">
+  <div class="album-art">
+    <img src="catchtherainbow.png" alt="Catch the Rainbow Cover">
+  </div>
+
+  <div class="track-info">
+    <h2>Catch the Rainbow</h2>
+    <p>Rainbow</p>
+  </div>
+
+  <div class="progress-container">
+    <span id="currentTime">0:00</span>
+    <input type="range" id="progress" value="0" />
+    <span id="duration">6:38</span> <!-- Change if you have exact -->
+  </div>
+
+  <div class="controls">
+    <button onclick="toggleShuffle()">⮂</button>
+    <button onclick="skip(-10)">⏮</button>
+    <button class="play-btn" onclick="togglePlay()">▶</button>
+    <button onclick="skip(10)">⏭</button>
+    <button onclick="toggleRepeat()">🗘</button>
+  </div>
+
+  <div class="tabs" onclick="toggleReview()">
+    <span>REVIEW??</span>
+  </div>
+
+  <div class="review-box" id="reviewBox">
+    <p>Some songs feel like whispers from another world but this one's a twilight dream on a cosmic sky. 🌌🎸</p>
+  </div>
+
+  <audio id="audio" src="CatchTheRainbow.mp3"></audio>
+</div>
+
+<script>
+  const audio = document.getElementById('audio');
+  const progress = document.getElementById('progress');
+  const playBtn = document.querySelector('.play-btn');
+  const currentTime = document.getElementById('currentTime');
+  const duration = document.getElementById('duration');
+
+  audio.addEventListener('loadedmetadata', () => {
+    duration.textContent = formatTime(audio.duration);
+  });
+
+  audio.addEventListener('timeupdate', () => {
+    progress.value = (audio.currentTime / audio.duration) * 100;
+    currentTime.textContent = formatTime(audio.currentTime);
+  });
+
+  progress.addEventListener('input', () => {
+    audio.currentTime = (progress.value / 100) * audio.duration;
+  });
+
+  function togglePlay() {
+    if (audio.paused) {
+      audio.play();
+      playBtn.textContent = "⏸";
+    } else {
+      audio.pause();
+      playBtn.textContent = "▶";
+    }
+  }
+
+  function skip(seconds) {
+    audio.currentTime += seconds;
+  }
+
+  function toggleShuffle() {
+    alert("Shuffle toggled (not functional in this demo)");
+  }
+
+  function toggleRepeat() {
+    audio.loop = !audio.loop;
+    alert(`Repeat ${audio.loop ? "on" : "off"}`);
+  }
+
+  function formatTime(seconds) {
+    const min = Math.floor(seconds / 60);
+    const sec = Math.floor(seconds % 60).toString().padStart(2, '0');
+    return `${min}:${sec}`;
+  }
+
+  function toggleReview() {
+    const reviewBox = document.getElementById("reviewBox");
+    reviewBox.style.display =
+            reviewBox.style.display === "block" ? "none" : "block";
+  }
+
+  window.onload = () => {
+    audio.volume = 1;
+  };
+</script>
+
+</body>
+</html>
